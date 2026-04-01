@@ -146,3 +146,100 @@ header {
     text-align: end;
     padding: 15px;
 }
+
+/* =============================================
+   MOBILE RESPONSIVE STYLES
+   This block runs ONLY when screen width <= 768px
+   (i.e. phones and small tablets)
+   ============================================= */
+@media (max-width: 768px) {
+
+    /* --- HEADER --- */
+    header {
+        height: auto;          /* let height grow naturally */
+        flex-wrap: wrap;       /* allow items to move to next line */
+        padding: 10px;         /* add breathing room inside */
+        gap: 8px;              /* space between items */
+    }
+
+    /* Hide the navigation links on mobile — too many to fit */
+    .nav_bar {
+        display: none;
+    }
+
+    /* Hide search bar on mobile to keep header clean */
+    .search_bar {
+        display: none;
+    }
+
+    /* Make logo smaller on mobile */
+    .myntra_home {
+        height: 30px;
+    }
+
+    /* Remove left margin so logo doesn't get cut off */
+    .logo_container {
+        margin-left: 0;
+    }
+
+    /* Remove right margin on action icons */
+    .action_bar {
+        margin-right: 0;
+        min-width: unset;      /* remove the 200px minimum width */
+        gap: 12px;
+    }
+
+    /* Hide the label text under icons (Profile, Wishlist, Bag) */
+    .action_name {
+        display: none;
+    }
+
+    /* --- MAIN CONTENT --- */
+
+    /* Push main content down so it doesn't hide under the fixed header */
+    main {
+        margin-top: 60px;
+    }
+
+    /* Make the banner fill the screen properly */
+    .banner_container {
+        margin: 0;
+    }
+
+    /* Make category heading text smaller */
+    .category_heading {
+        font-size: 1.1em;
+        margin: 20px 0 8px 15px;
+    }
+
+    /* Make category items wrap nicely into 2 columns on mobile */
+    .category_items {
+        justify-content: center; /* Center the items */
+        gap: 10px;              /* Space between the items */
+    }
+
+    .category_items a {
+        width: 45%;             /* Give the LINK container 45% width */
+        display: block;         /* Treat the link like a box */
+    }
+
+    .sale_item {
+        width: 100%;            /* The image now fills the 45% box */
+        height: auto;
+    }
+
+    /* --- FOOTER --- */
+
+    /* Stack footer columns vertically instead of side by side */
+    .footer_container {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        gap: 20px;
+    }
+
+    /* Center each footer column's content */
+    .footer_column {
+        align-items: center;
+    }
+}
