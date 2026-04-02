@@ -147,24 +147,63 @@ header {
     padding: 15px;
 }
 
+/* Desktop: Hide the hamburger menu icon */
+.hamburger_menu {
+    display: none;
+    cursor: pointer;
+    font-size: 28px;
+    margin-right: 15px;
+}
+
 /* =============================================
    MOBILE RESPONSIVE STYLES
-   This block runs ONLY when screen width <= 768px
-   (i.e. phones and small tablets)
    ============================================= */
 @media (max-width: 768px) {
 
     /* --- HEADER --- */
     header {
-        height: auto;          /* let height grow naturally */
-        flex-wrap: wrap;       /* allow items to move to next line */
-        padding: 10px;         /* add breathing room inside */
-        gap: 8px;              /* space between items */
+        height: auto;
+        flex-wrap: wrap;
+        padding: 10px 15px;
     }
 
-    /* Hide the navigation links on mobile — too many to fit */
+    /* Show hamburger on mobile */
+    .hamburger_menu {
+        display: block;
+    }
+
+    .logo_container {
+        display: flex;
+        align-items: center;
+        margin-left: 0;
+    }
+
+    /* 
+       Transform .nav_bar into a vertical menu 
+       that sits under the header.
+    */
     .nav_bar {
-        display: none;
+        display: none;            /* Hidden by default */
+        flex-direction: column;   /* Links go top to bottom */
+        width: 100%;             /* Take full width below header */
+        background: #fff;
+        position: absolute;
+        top: 60px;               /* Position it just under the header */
+        left: 0;
+        z-index: 99;
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
+    }
+
+    /* This class will be added/removed by JavaScript */
+    .nav_bar.show_menu {
+        display: flex;            /* Now it's visible! */
+    }
+
+    .nav_bar a {
+        padding: 15px 25px;       /* Bigger tap area for mobile */
+        border: none;             /* Clean up the desktop borders */
+        width: 100%;
     }
 
     /* Hide search bar on mobile to keep header clean */
@@ -177,59 +216,45 @@ header {
         height: 30px;
     }
 
-    /* Remove left margin so logo doesn't get cut off */
-    .logo_container {
-        margin-left: 0;
-    }
-
     /* Remove right margin on action icons */
     .action_bar {
         margin-right: 0;
-        min-width: unset;      /* remove the 200px minimum width */
-        gap: 12px;
+        min-width: unset;
+        gap: 15px;
     }
 
-    /* Hide the label text under icons (Profile, Wishlist, Bag) */
+    /* Hide the labels under icons */
     .action_name {
         display: none;
     }
 
-    /* --- MAIN CONTENT --- */
-
-    /* Push main content down so it doesn't hide under the fixed header */
+    /* --- MAIN CONTENT & GRID --- */
     main {
-        margin-top: 60px;
+        margin-top: 70px;
     }
 
-    /* Make the banner fill the screen properly */
-    .banner_container {
-        margin: 0;
-    }
-
-    /* Make category heading text smaller */
     .category_heading {
         font-size: 1.1em;
         margin: 20px 0 8px 15px;
     }
 
-    /* Make category items wrap nicely into 2 columns on mobile */
+    /* Make products into 2 columns */
     .category_items {
-        justify-content: center; /* Center the items */
-        gap: 10px;              /* Space between the items */
+        justify-content: center;
+        gap: 10px;
     }
 
     .category_items a {
-        width: 45%;             /* Give the LINK container 45% width */
-        display: block;         /* Treat the link like a box */
+        width: 45%;
+        display: block;
     }
 
     .sale_item {
-        width: 100%;            /* The image now fills the 45% box */
+        width: 100%;
         height: auto;
     }
 
     /* --- FOOTER --- */
-
     /* Stack footer columns vertically instead of side by side */
     .footer_container {
         flex-direction: column;
