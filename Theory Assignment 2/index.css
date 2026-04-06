@@ -1,0 +1,344 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Assistant,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    box-sizing: border-box;
+}
+header {
+    display: flex;
+    background-color: #ffffff;
+    height: 80px;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #b6b1b1;
+    position: fixed;
+    top:0%;
+    z-index: 100;
+    width: 100%;
+}
+.myntra_home {
+    height: 45px;
+}
+.logo_container {
+    margin-left: 4%;
+    
+}
+.action_bar {
+    margin-right: 4%;
+}
+.nav_bar {
+    display: flex;
+    min-width: 500px;
+    justify-content: space-evenly;
+}
+.nav_bar a {
+    font-size: 14px;
+    letter-spacing: .3px;
+    color: #282c3f;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 28px 0;
+    border-bottom: 5px solid #ffffff;
+}
+.nav_bar a:hover {
+    border-bottom: 4px solid #f54e77;
+}
+
+.nav_bar a sup {
+    color: #ff3f6c;
+    font-size: 10px;
+}
+
+.search_bar {
+    height: 40px;
+    min-width: 200px;
+    width: 30%;
+    display: flex;
+    align-items: center;
+}
+.search_icon {
+    box-sizing: content-box;
+    height: 20px;
+    padding: 10px;
+
+    background-color: #f5f5f6;
+    color: #282c3f;
+    font-weight: 300;
+    border-radius: 4px 0 0 4px;
+}
+.search_input {
+    color: #696e79;
+    background-color: #f5f5f6;
+    flex-grow: 1;
+    height: 40px;
+    border: 0;
+    border-radius: 0 4px 4px 0;
+}
+
+.action_bar {
+    display: flex;
+    min-width: 200px;
+    justify-content: space-evenly;
+}
+
+.action_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Main section */
+.banner_container {
+    margin: 40px 0;
+}
+.banner_image {
+    width: 100%;
+}
+
+.category_heading {
+    text-transform: uppercase;
+    color: #3e4152;
+    letter-spacing: .15em;
+    font-size: 1.8em;
+    margin: 50px 0 10px 30px;
+    max-height: 5em;
+    font-weight: 700;
+}
+
+.category_items {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.sale_item {
+    width: 250px;
+}
+
+.footer_container {
+    padding: 30px 0px 40px 0px;
+    background: #FAFBFC;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.footer_column {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer_column h3 {
+    color: #282c3f;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+.footer_column a {
+    color: #696b79;
+    font-size: 15px;
+    text-decoration: none;
+    padding-bottom: 5px;
+}
+
+.copyright {
+    color: #94969f;
+    text-align: end;
+    padding: 15px;
+}
+
+/* =============================================
+   SLICK SLIDER / CAROUSEL STYLES
+   ============================================= */
+
+/* We isolated the slider with .slider_container to avoid .category_items flex conflict */
+.slider_container {
+    display: block;  /* Slick manages its own layout */
+    overflow: hidden; /* Clean edge */
+}
+
+#offers_slider .slick-slide {
+    padding: 0 15px;  /* Increase padding to shrink images slightly */
+}
+
+#offers_slider .sale_item {
+    width: 90%;      /* Decrease size of images */
+    margin: 0 auto;  /* Center the slightly smaller image */
+    height: auto;
+}
+
+.slider_controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0 30px 0; /* Tightened margin below the counter */
+}
+
+.prev_side, .next_side {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    padding: 10px 15px;
+    border-radius: 50%;
+    /* No negative positions! They stay safely inside the padded container */
+}
+
+.prev_side {
+    left: 0;
+}
+
+.next_side {
+    right: 0;
+}
+
+.slider_btn {
+    background-color: #ff3f6c;
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background-color 0.25s ease;
+}
+
+.slider_btn:hover {
+    background-color: #e0355e;
+}
+
+.slide_counter {
+    font-size: 14px;
+    font-weight: 600;
+    color: #3e4152;
+    letter-spacing: 0.3px;
+}
+
+/* Desktop: Hide the hamburger menu icon */
+.hamburger_menu {
+    display: none;
+    cursor: pointer;
+    font-size: 28px;
+    margin-right: 15px;
+}
+
+/* =============================================
+   MOBILE RESPONSIVE STYLES
+   ============================================= */
+@media (max-width: 768px) {
+
+    /* --- HEADER --- */
+    header {
+        height: auto;
+        flex-wrap: wrap;
+        padding: 10px 15px;
+    }
+
+    /* Show hamburger on mobile */
+    .hamburger_menu {
+        display: block;
+    }
+
+    .logo_container {
+        display: flex;
+        align-items: center;
+        margin-left: 0;
+    }
+
+    /* 
+       Transform .nav_bar into a vertical menu 
+       that sits under the header.
+    */
+    .nav_bar {
+        display: none;            /* Hidden by default */
+        flex-direction: column;   /* Links go top to bottom */
+        width: 100%;             /* Take full width below header */
+        background: #fff;
+        position: absolute;
+        top: 60px;               /* Position it just under the header */
+        left: 0;
+        z-index: 99;
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
+    }
+
+    /* This class will be added/removed by JavaScript */
+    .nav_bar.show_menu {
+        display: flex;            /* Now it's visible! */
+    }
+
+    .nav_bar a {
+        padding: 15px 25px;       /* Bigger tap area for mobile */
+        border: none;             /* Clean up the desktop borders */
+        width: 100%;
+    }
+
+    /* Hide search bar on mobile to keep header clean */
+    .search_bar {
+        display: none;
+    }
+
+    /* Make logo smaller on mobile */
+    .myntra_home {
+        height: 30px;
+    }
+
+    /* Remove right margin on action icons */
+    .action_bar {
+        margin-right: 0;
+        min-width: unset;
+        gap: 15px;
+    }
+
+    /* Hide the labels under icons */
+    .action_name {
+        display: none;
+    }
+
+    /* --- MAIN CONTENT & GRID --- */
+    main {
+        margin-top: 70px;
+    }
+
+    .category_heading {
+        font-size: 1.1em;
+        margin: 20px 0 8px 15px;
+    }
+
+    /* Make products into 2 columns */
+    .category_items {
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .category_items a {
+        width: 45%;
+        display: block;
+    }
+
+    .slider_container a {
+        width: 100%;
+        display: block;
+    }
+
+    .sale_item {
+        width: 100%;
+        height: auto;
+    }
+
+    /* --- FOOTER --- */
+    /* Stack footer columns vertically instead of side by side */
+    .footer_container {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        gap: 20px;
+    }
+
+    /* Center each footer column's content */
+    .footer_column {
+        align-items: center;
+    }
+}
