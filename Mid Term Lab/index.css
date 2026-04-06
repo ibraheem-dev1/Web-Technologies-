@@ -147,6 +147,75 @@ header {
     padding: 15px;
 }
 
+/* =============================================
+   SLICK SLIDER / CAROUSEL STYLES
+   ============================================= */
+
+/* We isolated the slider with .slider_container to avoid .category_items flex conflict */
+.slider_container {
+    display: block;  /* Slick manages its own layout */
+    overflow: hidden; /* Clean edge */
+}
+
+#offers_slider .slick-slide {
+    padding: 0 15px;  /* Increase padding to shrink images slightly */
+}
+
+#offers_slider .sale_item {
+    width: 90%;      /* Decrease size of images */
+    margin: 0 auto;  /* Center the slightly smaller image */
+    height: auto;
+}
+
+.slider_controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0 30px 0; /* Tightened margin below the counter */
+}
+
+.prev_side, .next_side {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    padding: 10px 15px;
+    border-radius: 50%;
+    /* No negative positions! They stay safely inside the padded container */
+}
+
+.prev_side {
+    left: 0;
+}
+
+.next_side {
+    right: 0;
+}
+
+.slider_btn {
+    background-color: #ff3f6c;
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background-color 0.25s ease;
+}
+
+.slider_btn:hover {
+    background-color: #e0355e;
+}
+
+.slide_counter {
+    font-size: 14px;
+    font-weight: 600;
+    color: #3e4152;
+    letter-spacing: 0.3px;
+}
+
 /* Desktop: Hide the hamburger menu icon */
 .hamburger_menu {
     display: none;
@@ -246,6 +315,11 @@ header {
 
     .category_items a {
         width: 45%;
+        display: block;
+    }
+
+    .slider_container a {
+        width: 100%;
         display: block;
     }
 
