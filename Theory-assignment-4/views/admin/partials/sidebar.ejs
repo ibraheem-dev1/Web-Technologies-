@@ -1,0 +1,15 @@
+<aside class="admin_sidebar">
+    <div class="admin_brand">Admin Panel</div>
+    <div class="admin_user">
+        <div class="admin_user_label">Signed in</div>
+        <div class="admin_user_email"><%= user && user.email ? user.email : 'admin' %></div>
+    </div>
+    <nav class="admin_nav">
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/products/new">Add Product</a>
+        <a href="/products" target="_blank">View Store</a>
+    </nav>
+    <form class="admin_logout" method="POST" action="/admin/logout">
+        <button type="submit">Logout</button>
+    </form>
+</aside>

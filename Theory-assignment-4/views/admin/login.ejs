@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="/index.css">
+</head>
+<body class="admin_login_body">
+    <div class="admin_login_wrap">
+        <div class="admin_login_shell">
+            <section class="admin_login_brand">
+                <div class="admin_login_badge">Admin Access</div>
+                <h1 class="admin_login_title">Store Control</h1>
+                <p class="admin_login_tagline">Manage products, pricing, and stock in one focused workspace.</p>
+                <ul class="admin_login_points">
+                    <li>Fast product edits</li>
+                    <li>Image uploads and previews</li>
+                    <li>Live storefront view</li>
+                </ul>
+            </section>
+            <section class="admin_login_panel">
+                <h2>Welcome back</h2>
+                <p class="admin_login_hint">Sign in to manage your catalog.</p>
+                <% if (error) { %>
+                    <div class="admin_flash admin_flash--error"><%= error %></div>
+                <% } %>
+                <form class="admin_login_form" method="POST" action="/admin/login">
+                    <div class="admin_field">
+                        <label class="admin_label" for="email">Email</label>
+                        <input class="admin_input" id="email" name="email" type="email" required>
+                    </div>
+
+                    <div class="admin_field">
+                        <label class="admin_label" for="password">Password</label>
+                        <input class="admin_input" id="password" name="password" type="password" required>
+                    </div>
+
+                    <button class="admin_btn admin_login_btn" type="submit">Sign In</button>
+                </form>
+                <div class="admin_login_meta">Need access? Contact the store administrator.</div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
