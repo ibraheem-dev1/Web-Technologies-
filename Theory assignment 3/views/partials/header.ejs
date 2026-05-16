@@ -1,0 +1,31 @@
+<header>
+    <div class="logo_container">
+        <span class="material-symbols-outlined hamburger_menu" id="menu_toggle">menu</span>
+        <a href="/"><img class="myntra_home" src="/images/myntra_logo.webp" alt="Myntra Home"></a>
+    </div>
+    <nav class="nav_bar">
+        <a href="/"      class="<%= active === 'home'  ? 'nav_active' : '' %>">Home</a>
+        <a href="/products" class="<%= active === 'products' ? 'nav_active' : '' %>">Products</a>
+        <a href="/men"   class="<%= active === 'men'   ? 'nav_active' : '' %>">Men</a>
+        <a href="/women" class="<%= active === 'women' ? 'nav_active' : '' %>">Women</a>
+        <a href="/kids"  class="<%= active === 'kids'  ? 'nav_active' : '' %>">Kids</a>
+    </nav>
+    <div class="search_bar">
+        <span class="material-symbols-outlined search_icon">search</span>
+        <input class="search_input" placeholder="Search for products, brands and more">
+    </div>
+    <div class="action_bar">
+        <div class="action_container">
+            <span class="material-symbols-outlined action_icon">person</span>
+            <span class="action_name">Profile</span>
+        </div>
+        <div class="action_container">
+            <span class="material-symbols-outlined action_icon">favorite</span>
+            <span class="action_name">Wishlist</span>
+        </div>
+        <div class="action_container">
+            <span class="material-symbols-outlined action_icon">shopping_bag</span>
+            <span class="action_name">Bag</span>
+        </div>
+    </div>
+</header>

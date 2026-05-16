@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products – Myntra</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+
+    <%- include('partials/header') %>
+
+    <main>
+        <div class="category_heading">PRODUCTS</div>
+
+        <form class="filter_bar" method="GET" action="/products">
+            <div class="filter_group">
+                <input class="filter_input" type="text" name="q" value="<%= filters.q %>" placeholder="Search by name">
+            </div>
+
+            <div class="filter_group">
+                <select class="filter_select" name="category">
+                    <option value="all" <%= filters.category === 'all' ? 'selected' : '' %>>All Categories</option>
+                    <% categoryOptions.forEach(function(cat) { %>
+                        <option value="<%= cat %>" <%= filters.category === cat ? 'selected' : '' %>><%= cat.charAt(0).toUpperCase() + cat.slice(1) %></option>
+                    <% }); %>
+                </select>
+            </div>
+
+            <div class="filter_group">
+                <input class="filter_input" type="number" name="minPrice" min="0" value="<%= filters.minPrice %>" placeholder="Min Rs.">
+                <input class="filter_input" type="number" name="maxPrice" min="0" value="<%= filters.maxPrice %>" placeholder="Max Rs.">
+            </div>
+
+            <div class="filter_group">
+                <select class="filter_select" name="sort">
+                    <option value="newest" <%= filters.sort === 'newest' ? 'selected' : '' %>>Newest</option>
+                    <option value="price_asc" <%= filters.sort === 'price_asc' ? 'selected' : '' %>>Price: Low to High</option>
+                    <option value="price_desc" <%= filters.sort === 'price_desc' ? 'selected' : '' %>>Price: High to Low</option>
+                    <option value="rating_desc" <%= filters.sort === 'rating_desc' ? 'selected' : '' %>>Rating: High to Low</option>
+                </select>
+            </div>
+
+            <div class="filter_actions">
+                <button class="filter_btn" type="submit">Apply</button>
+                <a class="filter_clear" href="/products">Clear</a>
+            </div>
+        </form>
+
+        <div class="product_count">
+            Showing <%= products.length %> of <%= totalCount %> products
+        </div>
+
+        <% if (products.length === 0) { %>
+            <div class="empty_state">No products found. Try a different filter.</div>
+        <% } else { %>
+            <div class="product_grid">
+                <% products.forEach(function(p) { %>
+                    <%- include('partials/product_card', { p: p }) %>
+                <% }); %>
+            </div>
+        <% } %>
+
+        <% if (totalPages > 1) { %>
+            <% const qs = queryString ? '&' + queryString : ''; %>
+            <div class="pagination">
+                <a class="page_link <%= page === 1 ? 'disabled' : '' %>" href="/products?page=<%= page - 1 %><%= qs %>">Previous</a>
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <a class="page_link <%= page === i ? 'active' : '' %>" href="/products?page=<%= i %><%= qs %>"><%= i %></a>
+                <% } %>
+                <a class="page_link <%= page === totalPages ? 'disabled' : '' %>" href="/products?page=<%= page + 1 %><%= qs %>">Next</a>
+            </div>
+        <% } %>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <script src="/index.js"></script>
+
+</body>
+</html>

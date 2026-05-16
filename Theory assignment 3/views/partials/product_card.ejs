@@ -1,0 +1,23 @@
+<div class="product_card">
+    <% const folder = p.category || 'categories'; %>
+    <div class="product_image">
+        <img src="/images/<%= folder %>/<%= p.image %>.jpg" alt="<%= p.name %>">
+    </div>
+    <div class="product_info">
+        <h3 class="product_brand"><%= p.brand %></h3>
+        <p class="product_name"><%= p.name %></p>
+
+        <div class="product_rating">
+            <span class="rating_badge">★ <%= p.rating %></span>
+            <span class="rating_count">| <%= p.ratingCount %></span>
+        </div>
+
+        <div class="product_price">
+            <span class="price">Rs. <%= p.price %></span>
+            <span class="mrp">Rs. <%= p.mrp %></span>
+            <span class="discount">(<%= p.discount %>% OFF)</span>
+        </div>
+
+        <button class="add_to_cart">ADD TO CART</button>
+    </div>
+</div>

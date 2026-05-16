@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"f:\\\\Desktop\\\\Repo of the Web Technologies\" -Force | Select-Object Name, @{Name=\"Type\";Expression={If\\($_.PSIsContainer\\){\"Folder\"}Else{\"File\"}}})",
+      "PowerShell(Get-ChildItem \"f:\\\\Desktop\\\\Repo of the Web Technologies\" -Recurse -Directory | Where-Object { $_.Name -match '3' } | Select-Object FullName)"
+    ]
+  }
+}
