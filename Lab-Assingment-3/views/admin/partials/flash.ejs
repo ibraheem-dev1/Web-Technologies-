@@ -1,0 +1,11 @@
+<% if (flash && (flash.success.length || flash.error.length || flash.info.length)) { %>
+    <% flash.success.forEach(function(msg) { %>
+        <div class="admin_flash admin_flash--success"><%= msg %></div>
+    <% }); %>
+    <% flash.error.forEach(function(msg) { %>
+        <div class="admin_flash admin_flash--error"><%= msg %></div>
+    <% }); %>
+    <% flash.info.forEach(function(msg) { %>
+        <div class="admin_flash admin_flash--info"><%= msg %></div>
+    <% }); %>
+<% } %>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Myntra</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+
+    <%- include('partials/header') %>
+
+    <main class="profile_page">
+        <div class="profile_card">
+            <h1>Hello, <%= user && user.name ? user.name : 'Customer' %></h1>
+            <p>Manage your account details and security preferences.</p>
+            <div class="profile_details">
+                <div>
+                    <span class="profile_label">Name</span>
+                    <span class="profile_value"><%= user && user.name ? user.name : '-' %></span>
+                </div>
+                <div>
+                    <span class="profile_label">Email</span>
+                    <span class="profile_value"><%= user && user.email ? user.email : '-' %></span>
+                </div>
+                <div>
+                    <span class="profile_label">Role</span>
+                    <span class="profile_value"><%= user && user.role ? user.role : '-' %></span>
+                </div>
+            </div>
+            <div class="profile_actions">
+                <a class="profile_btn" href="/orders">View Orders</a>
+                <a class="outline_btn" href="/products">Browse Products</a>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+</body>
+</html>
