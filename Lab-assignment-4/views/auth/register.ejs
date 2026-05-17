@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Myntra</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+
+    <%- include('../partials/header') %>
+
+    <main class="auth_page">
+        <div class="auth_card">
+            <h1>Create Account</h1>
+            <p>Join us to explore the latest styles and offers.</p>
+            <form class="auth_form" method="POST" action="/register">
+                <label class="auth_label" for="name">Full Name</label>
+                <input class="auth_input" id="name" name="name" type="text" required>
+
+                <label class="auth_label" for="email">Email</label>
+                <input class="auth_input" id="email" name="email" type="email" required>
+
+                <label class="auth_label" for="password">Password</label>
+                <input class="auth_input" id="password" name="password" type="password" minlength="6" required>
+
+                <label class="auth_label" for="confirmPassword">Confirm Password</label>
+                <input class="auth_input" id="confirmPassword" name="confirmPassword" type="password" minlength="6" required>
+
+                <button class="auth_btn" type="submit">Register</button>
+            </form>
+            <div class="auth_footer">Already have an account? <a href="/login">Login</a></div>
+        </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+
+</body>
+</html>
