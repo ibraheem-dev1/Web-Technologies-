@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Myntra</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+
+    <%- include('partials/header') %>
+
+    <main class="orders_page">
+        <div class="orders_card">
+            <div class="orders_header">
+                <h1>My Orders</h1>
+                <a class="outline_btn" href="/products">Continue Shopping</a>
+            </div>
+
+            <% if (orders.length === 0) { %>
+                <div class="orders_empty">
+                    <p>You have no orders yet.</p>
+                    <a class="auth_btn" href="/products">Browse Products</a>
+                </div>
+            <% } else { %>
+                <div class="orders_list">
+                    <% orders.forEach(function(order) { %>
+                        <a class="order_row" href="/orders/<%= order._id %>">
+                            <div>
+                                <div class="order_id">Order #<%= String(order._id).slice(-6) %></div>
+                                <div class="order_date"><%= new Date(order.createdAt).toLocaleDateString() %></div>
+                            </div>
+                            <div class="order_meta">
+                                <span class="order_status"><%= order.status %></span>
+                                <span class="order_total">Rs. <%= order.totalAmount %></span>
+                            </div>
+                        </a>
+                    <% }); %>
+                </div>
+            <% } %>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+</body>
+</html>

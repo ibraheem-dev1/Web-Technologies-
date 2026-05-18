@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div class="admin_layout">
+        <%- include('partials/sidebar', { user: user }) %>
+        <main class="admin_content">
+            <div class="admin_header">
+                <h1>Add Product</h1>
+                <a class="admin_link" href="/admin">Back</a>
+            </div>
+
+            <%- include('partials/flash') %>
+
+            <% if (error) { %>
+                <div class="admin_error"><%= error %></div>
+            <% } %>
+
+            <form class="admin_form" method="POST" action="/admin/products" enctype="multipart/form-data">
+                <label class="admin_label">Name</label>
+                <input class="admin_input" name="name" value="<%= product.name || '' %>" required>
+
+                <label class="admin_label">Brand</label>
+                <input class="admin_input" name="brand" value="<%= product.brand || '' %>">
+
+                <label class="admin_label">Price</label>
+                <input class="admin_input" type="number" min="0" name="price" value="<%= product.price || '' %>" required>
+
+                <label class="admin_label">MRP</label>
+                <input class="admin_input" type="number" min="0" name="mrp" value="<%= product.mrp || '' %>">
+
+                <label class="admin_label">Discount (%)</label>
+                <input class="admin_input" type="number" min="0" name="discount" value="<%= product.discount || '' %>">
+
+                <label class="admin_label">On Sale</label>
+                <label class="admin_checkbox">
+                    <input class="admin_checkbox_input" type="checkbox" name="isOnSale" value="true" <%= product.isOnSale ? 'checked' : '' %>>
+                    Mark as on sale
+                </label>
+
+                <label class="admin_label">Category</label>
+                <select class="admin_input" name="category" required>
+                    <option value="">Select</option>
+                    <% categoryOptions.forEach(function(cat) { %>
+                        <option value="<%= cat %>" <%= product.category === cat ? 'selected' : '' %>><%= cat %></option>
+                    <% }); %>
+                </select>
+
+                <label class="admin_label">Rating</label>
+                <input class="admin_input" type="number" min="0" max="5" step="0.1" name="rating" value="<%= product.rating || '' %>" required>
+
+                <label class="admin_label">Rating Count</label>
+                <input class="admin_input" name="ratingCount" value="<%= product.ratingCount || '' %>">
+
+                <label class="admin_label">Stock</label>
+                <input class="admin_input" type="number" min="0" name="stock" value="<%= product.stock || '' %>" required>
+
+                <label class="admin_label">Image URL (optional)</label>
+                <input class="admin_input" name="imageUrl" value="<%= product.imageUrl || '' %>" placeholder="/uploads/your-image.jpg">
+
+                <label class="admin_label">Upload Image (optional)</label>
+                <input class="admin_input" type="file" name="imageFile" accept="image/*">
+
+                <button class="admin_btn" type="submit">Create Product</button>
+            </form>
+        </main>
+    </div>
+</body>
+</html>

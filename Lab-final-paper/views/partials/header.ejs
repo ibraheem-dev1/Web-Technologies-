@@ -1,0 +1,58 @@
+<header>
+    <div class="logo_container">
+        <span class="material-symbols-outlined hamburger_menu" id="menu_toggle">menu</span>
+        <a href="/"><img class="myntra_home" src="/images/myntra_logo.webp" alt="Myntra Home"></a>
+    </div>
+    <nav class="nav_bar">
+        <a href="/"      class="<%= active === 'home'  ? 'nav_active' : '' %>">Home</a>
+        <a href="/products" class="<%= active === 'products' ? 'nav_active' : '' %>">Products</a>
+        <a href="/onsale-products" class="<%= active === 'onsale' ? 'nav_active' : '' %>">On Sale</a>
+        <a href="/men"   class="<%= active === 'men'   ? 'nav_active' : '' %>">Men</a>
+        <a href="/women" class="<%= active === 'women' ? 'nav_active' : '' %>">Women</a>
+        <a href="/kids"  class="<%= active === 'kids'  ? 'nav_active' : '' %>">Kids</a>
+    </nav>
+    <div class="action_bar">
+        <% if (user) { %>
+            <a class="action_container action_link" href="/profile">
+                <span class="material-symbols-outlined action_icon">person</span>
+                <span class="action_name">My Profile</span>
+            </a>
+            <form class="action_container action_form" method="POST" action="/logout">
+                <button class="action_button" type="submit">
+                    <span class="material-symbols-outlined action_icon">logout</span>
+                    <span class="action_name">Logout</span>
+                </button>
+            </form>
+        <% } else { %>
+            <a class="action_container action_link" href="/login">
+                <span class="material-symbols-outlined action_icon">login</span>
+                <span class="action_name">Login</span>
+            </a>
+            <a class="action_container action_link" href="/register">
+                <span class="material-symbols-outlined action_icon">person_add</span>
+                <span class="action_name">Register</span>
+            </a>
+        <% } %>
+        <a class="action_container action_link" href="/cart">
+            <span class="material-symbols-outlined action_icon">shopping_bag</span>
+            <% if (cartCount && cartCount > 0) { %>
+                <span class="cart_badge"><%= cartCount %></span>
+            <% } %>
+            <span class="action_name">Cart</span>
+        </a>
+    </div>
+</header>
+
+<% if (flash && (flash.success.length || flash.error.length || flash.info.length)) { %>
+    <div class="site_flash_wrap">
+        <% flash.success.forEach(function(msg) { %>
+            <div class="site_flash site_flash--success"><%= msg %></div>
+        <% }); %>
+        <% flash.error.forEach(function(msg) { %>
+            <div class="site_flash site_flash--error"><%= msg %></div>
+        <% }); %>
+        <% flash.info.forEach(function(msg) { %>
+            <div class="site_flash site_flash--info"><%= msg %></div>
+        <% }); %>
+    </div>
+<% } %>

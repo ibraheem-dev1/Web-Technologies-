@@ -1,0 +1,19 @@
+<main class="onsale_page">
+    <div class="category_heading">ON SALE</div>
+
+    <% if (products.length === 0) { %>
+        <div class="empty_state">No on-sale products available right now.</div>
+    <% } else { %>
+        <div id="product-list" class="product_grid">
+            <% products.forEach(function(p) { %>
+                <%- include('partials/product_card', { p: p }) %>
+            <% }); %>
+        </div>
+    <% } %>
+
+    <div class="onsale_pagination">
+        <button id="onsale_prev" class="page_btn" type="button">Previous</button>
+        <span id="onsale_page_indicator" class="page_indicator">Page 1 of 1</span>
+        <button id="onsale_next" class="page_btn" type="button">Next</button>
+    </div>
+</main>

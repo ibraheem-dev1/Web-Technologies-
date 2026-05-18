@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div class="admin_layout">
+        <%- include('partials/sidebar', { user: user }) %>
+        <main class="admin_content">
+            <div class="admin_header">
+                <h1>Products</h1>
+                <a class="admin_btn" href="/admin/products/new">Add Product</a>
+            </div>
+
+            <%- include('partials/flash') %>
+
+            <div class="admin_table_wrap">
+                <table class="admin_table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Rating</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% products.forEach(function(p) { %>
+                            <% const imageSrc = p.imageUrl ? p.imageUrl : '/images/banner.jpg'; %>
+                            <tr>
+                                <td><img class="admin_thumb" src="<%= imageSrc %>" alt="<%= p.name %>"></td>
+                                <td><%= p.name %></td>
+                                <td><%= p.category %></td>
+                                <td>Rs. <%= p.price %></td>
+                                <td><%= p.stock %></td>
+                                <td><%= p.rating %></td>
+                                <td class="admin_actions">
+                                    <a class="admin_link" href="/admin/products/<%= p._id %>/edit">Edit</a>
+                                    <form method="POST" action="/admin/products/<%= p._id %>?_method=DELETE" onsubmit="return confirm('Delete this product?');">
+                                        <button class="admin_link danger" type="submit">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
