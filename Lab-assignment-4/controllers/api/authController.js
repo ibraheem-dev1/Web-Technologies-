@@ -1,13 +1,9 @@
 const jwt = require('jsonwebtoken');
-const User = require('../../models/User');
+const userService = require('../../services/userService');
 
 async function login(req, res) {
     const email = (req.body.email || '').trim().toLowerCase();
     const password = req.body.password || '';
-
-    if (!email || !password) {
-        return res.status(400).json({ ok: false, message: 'Email and password are required.' });
-    }
 
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
@@ -15,15 +11,16 @@ async function login(req, res) {
     }
 
     try {
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(401).json({ ok: false, message: 'Invalid email or password.' });
+        const authResult = await userService.authenticateUser({ email, password });
+        if (!authResult.ok) {
+            const status = authResult.reason === 'missing_fields' ? 400 : 401;
+            const message = authResult.reason === 'missing_fields'
+                ? 'Email and password are required.'
+                : 'Invalid email or password.';
+            return res.status(status).json({ ok: false, message });
         }
 
-        const isValid = await user.comparePassword(password);
-        if (!isValid) {
-            return res.status(401).json({ ok: false, message: 'Invalid email or password.' });
-        }
+        const user = authResult.user;
 
         const token = jwt.sign(
             { user_id: String(user._id), role: user.role },

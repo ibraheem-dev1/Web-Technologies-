@@ -1,6 +1,6 @@
 const express = require('express');
 const homeController = require('../../controllers/web/homeController');
-const { categoryRoutes } = require('../../config/constants');
+const { categoryRoutes } = require('../../shared/constants');
 
 const router = express.Router();
 

@@ -1,12 +1,9 @@
-const Product = require('../../models/Product');
-const { offerImages } = require('../../config/constants');
+const { offerImages } = require('../../shared/constants');
+const homeService = require('../../services/homeService');
 
 async function home(req, res) {
     try {
-        const products = await Product.find({})
-            .sort({ createdAt: -1 })
-            .limit(8)
-            .lean();
+        const products = await homeService.getHomeProducts();
 
         return res.render('index', { active: 'home', offerImages, products });
     } catch (err) {
@@ -17,9 +14,7 @@ async function home(req, res) {
 
 async function category(req, res, categoryConfig) {
     try {
-        const categoryProducts = await Product.find({ category: categoryConfig.active })
-            .sort({ createdAt: -1 })
-            .lean();
+        const categoryProducts = await homeService.getCategoryProducts(categoryConfig.active);
 
         return res.render('category', {
             active: categoryConfig.active,

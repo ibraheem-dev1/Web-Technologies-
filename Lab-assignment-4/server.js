@@ -18,9 +18,11 @@ const authRoutes = require('./routes/web/authRoutes');
 const orderRoutes = require('./routes/web/orderRoutes');
 const adminRoutes = require('./routes/web/adminRoutes');
 
+const appConfig = require('./config/default.json');
+
 const app = express();
-const port = 3000;
-const mongoUri = 'mongodb://127.0.0.1:27017/assignment3';
+const port = appConfig.port || 3000;
+const mongoUri = appConfig.mongoUri || 'mongodb://127.0.0.1:27017/assignment3';
 
 // ── EJS view engine ─────────────────────────────────────────────────────────
 app.set('view engine', 'ejs');

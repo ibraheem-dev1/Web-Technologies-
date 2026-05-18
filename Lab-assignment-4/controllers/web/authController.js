@@ -1,4 +1,4 @@
-const User = require('../../models/User');
+const webAuthService = require('../../services/webAuthService');
 
 function showRegister(req, res) {
     if (req.session.user) {
@@ -13,41 +13,27 @@ async function register(req, res) {
     const password = req.body.password || '';
     const confirmPassword = req.body.confirmPassword || '';
 
-    if (!name || !email || !password || !confirmPassword) {
-        req.flash('error', 'Please fill all required fields.');
-        return res.redirect('/register');
-    }
-    if (password.length < 6) {
-        req.flash('error', 'Password must be at least 6 characters.');
-        return res.redirect('/register');
-    }
-    if (password !== confirmPassword) {
-        req.flash('error', 'Passwords do not match.');
-        return res.redirect('/register');
-    }
-
     try {
-        const existing = await User.findOne({ email }).lean();
-        if (existing) {
-            req.flash('error', 'Email already registered.');
-            return res.redirect('/register');
-        }
-
-        const newUser = await User.create({
+        const result = await webAuthService.registerFlow({
             name,
             email,
             password,
-            role: 'customer'
+            confirmPassword
         });
+        if (!result.ok) {
+            req.flash(result.flash.type, result.flash.message);
+            return res.redirect(result.redirectTo);
+        }
 
+        const newUser = result.user;
         req.session.user = {
             id: String(newUser._id),
             role: newUser.role,
             email: newUser.email,
             name: newUser.name
         };
-        req.flash('success', `Welcome, ${newUser.name}!`);
-        return res.redirect('/');
+        req.flash(result.flash.type, result.flash.message);
+        return res.redirect(result.redirectTo);
     } catch (err) {
         console.error('Register error:', err);
         req.flash('error', 'Registration failed. Please try again.');
@@ -69,24 +55,14 @@ async function login(req, res) {
     const email = (req.body.email || '').trim().toLowerCase();
     const password = req.body.password || '';
 
-    if (!email || !password) {
-        req.flash('error', 'Please enter email and password.');
-        return res.redirect('/login');
-    }
-
     try {
-        const user = await User.findOne({ email });
-        if (!user) {
-            req.flash('error', 'Invalid email or password.');
-            return res.redirect('/login');
+        const result = await webAuthService.loginFlow({ email, password });
+        if (!result.ok) {
+            req.flash(result.flash.type, result.flash.message);
+            return res.redirect(result.redirectTo);
         }
 
-        const isValid = await user.comparePassword(password);
-        if (!isValid) {
-            req.flash('error', 'Invalid email or password.');
-            return res.redirect('/login');
-        }
-
+        const user = result.user;
         req.session.user = {
             id: String(user._id),
             role: user.role,
@@ -94,11 +70,8 @@ async function login(req, res) {
             name: user.name
         };
 
-        req.flash('success', `Welcome back, ${user.name}!`);
-        if (user.role === 'admin') {
-            return res.redirect('/admin');
-        }
-        return res.redirect('/');
+        req.flash(result.flash.type, result.flash.message);
+        return res.redirect(result.redirectTo);
     } catch (err) {
         console.error('Login error:', err);
         req.flash('error', 'Login failed. Please try again.');

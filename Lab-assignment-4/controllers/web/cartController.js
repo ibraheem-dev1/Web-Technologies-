@@ -1,26 +1,14 @@
-const Product = require('../../models/Product');
-const { getSessionCart, buildCartSummary } = require('../../services/cartService');
+const cartService = require('../../services/cartService');
 
 async function viewCart(req, res) {
-    const cart = getSessionCart(req);
-    const summary = buildCartSummary(cart);
-    const ids = summary.items.map(item => item.productId);
-
     try {
-        const products = await Product.find({ _id: { $in: ids } })
-            .select('stock')
-            .lean();
-        const stockMap = new Map(products.map(p => [String(p._id), p.stock || 0]));
-        const items = summary.items.map(item => ({
-            ...item,
-            stock: stockMap.get(String(item.productId)) || 0
-        }));
-
+        const cart = cartService.getSessionCart(req);
+        const viewData = await cartService.getCartViewData(cart);
         return res.render('cart', {
             active: 'cart',
-            items,
-            total: summary.total,
-            totalQty: summary.totalQty
+            items: viewData.items,
+            total: viewData.total,
+            totalQty: viewData.totalQty
         });
     } catch (err) {
         console.error('Cart load error:', err);
@@ -43,49 +31,22 @@ async function addToCart(req, res) {
         return res.redirect(redirectTo);
     }
 
-    if (!productId) {
-        return respondError('Unable to add item to cart.');
-    }
-
     try {
-        const product = await Product.findById(productId).lean();
-        if (!product) {
-            return respondError('Product not found.', 404);
+        const cart = cartService.getSessionCart(req);
+        const result = await cartService.addItem(cart, productId, qty);
+        if (!result.ok) {
+            return respondError(result.message, result.status);
         }
 
-        if (!product.stock || product.stock <= 0) {
-            return respondError('This product is out of stock.');
-        }
-
-        const cart = getSessionCart(req);
-        const existing = cart.items[productId];
-        const existingQty = existing ? existing.qty : 0;
-        if (existingQty + qty > product.stock) {
-            return respondError(`Only ${product.stock} item(s) left in stock.`);
-        }
-
-        if (existing) {
-            existing.qty += qty;
-        } else {
-            cart.items[productId] = {
-                productId,
-                name: product.name,
-                price: product.price,
-                imageUrl: product.imageUrl || '/images/banner.jpg',
-                qty
-            };
-        }
-
-        const summary = buildCartSummary(cart);
         if (wantsJson) {
             return res.json({
                 ok: true,
-                cartCount: summary.totalQty,
-                message: `${product.name} added to cart.`
+                cartCount: result.summary.totalQty,
+                message: result.message
             });
         }
 
-        req.flash('success', `${product.name} added to cart.`);
+        req.flash('success', result.message);
         return res.redirect(redirectTo);
     } catch (err) {
         console.error('Cart add error:', err);
@@ -95,10 +56,9 @@ async function addToCart(req, res) {
 
 function removeFromCart(req, res) {
     const productId = (req.body.productId || '').trim();
-    const cart = getSessionCart(req);
-
-    if (productId && cart.items[productId]) {
-        delete cart.items[productId];
+    const cart = cartService.getSessionCart(req);
+    const result = cartService.removeItem(cart, productId);
+    if (result.removed) {
         req.flash('info', 'Item removed from cart.');
     }
 
@@ -120,41 +80,15 @@ async function adjustCart(req, res) {
         return res.redirect('/cart');
     }
 
-    if (!productId) {
-        return respondAdjust('Unable to update cart.');
-    }
-
-    const cart = getSessionCart(req);
-    const item = cart.items[productId];
-    if (!item) {
-        return respondAdjust('Cart item not found.');
-    }
-
-    if (delta < 0) {
-        item.qty -= 1;
-        if (item.qty <= 0) {
-            delete cart.items[productId];
-        }
-
-        if (wantsJson) {
-            const summary = buildCartSummary(cart);
-            return res.json({ ok: true, cartCount: summary.totalQty, qty: item.qty || 0 });
-        }
-
-        return res.redirect('/cart');
-    }
-
     try {
-        const product = await Product.findById(productId).select('stock').lean();
-        const stock = product && product.stock ? product.stock : 0;
-        if (stock <= 0 || item.qty + 1 > stock) {
-            return respondAdjust(`Only ${stock} item(s) left in stock.`);
+        const cart = cartService.getSessionCart(req);
+        const result = await cartService.adjustItem(cart, productId, delta);
+        if (!result.ok) {
+            return respondAdjust(result.message, result.status);
         }
 
-        item.qty += 1;
         if (wantsJson) {
-            const summary = buildCartSummary(cart);
-            return res.json({ ok: true, cartCount: summary.totalQty, qty: item.qty });
+            return res.json({ ok: true, cartCount: result.summary.totalQty, qty: result.qty });
         }
 
         return res.redirect('/cart');

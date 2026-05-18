@@ -1,5 +1,5 @@
-const Product = require('../../models/Product');
-const { categoryOptions } = require('../../config/constants');
+const { categoryOptions } = require('../../shared/constants');
+const productService = require('../../services/productService');
 
 async function list(req, res) {
     const limit = 8;
@@ -10,44 +10,16 @@ async function list(req, res) {
     const maxPriceRaw = parseFloat(req.query.maxPrice);
     const sort = (req.query.sort || 'newest').trim();
 
-    const filter = {};
-    if (q) {
-        filter.name = { $regex: q, $options: 'i' };
-    }
-    if (category && category !== 'all') {
-        filter.category = category;
-    }
-    if (!Number.isNaN(minPriceRaw) || !Number.isNaN(maxPriceRaw)) {
-        filter.price = {};
-        if (!Number.isNaN(minPriceRaw)) {
-            filter.price.$gte = minPriceRaw;
-        }
-        if (!Number.isNaN(maxPriceRaw)) {
-            filter.price.$lte = maxPriceRaw;
-        }
-        if (Object.keys(filter.price).length === 0) {
-            delete filter.price;
-        }
-    }
-
-    const sortMap = {
-        price_asc:  { price: 1 },
-        price_desc: { price: -1 },
-        rating_desc:{ rating: -1 },
-        newest:     { createdAt: -1 }
-    };
-    const sortBy = sortMap[sort] || sortMap.newest;
-
     try {
-        const totalCount = await Product.countDocuments(filter);
-        const totalPages = Math.max(Math.ceil(totalCount / limit), 1);
-        const safePage = Math.min(page, totalPages);
-
-        const productsFromDb = await Product.find(filter)
-            .sort(sortBy)
-            .skip((safePage - 1) * limit)
-            .limit(limit)
-            .lean();
+        const result = await productService.listProducts({
+            page,
+            q,
+            category,
+            minPriceRaw,
+            maxPriceRaw,
+            sort,
+            limit
+        });
 
         const queryParams = new URLSearchParams();
         if (q) queryParams.set('q', q);
@@ -58,17 +30,11 @@ async function list(req, res) {
 
         return res.render('products', {
             active: 'products',
-            products: productsFromDb,
-            page: safePage,
-            totalPages,
-            totalCount,
-            filters: {
-                q,
-                category: category || 'all',
-                minPrice: !Number.isNaN(minPriceRaw) ? minPriceRaw : '',
-                maxPrice: !Number.isNaN(maxPriceRaw) ? maxPriceRaw : '',
-                sort
-            },
+            products: result.products,
+            page: result.page,
+            totalPages: result.totalPages,
+            totalCount: result.totalCount,
+            filters: result.filters,
             queryString: queryParams.toString(),
             categoryOptions
         });

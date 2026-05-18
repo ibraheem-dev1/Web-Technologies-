@@ -1,7 +1,7 @@
-const Product = require('../../models/Product');
-const User = require('../../models/User');
-const Order = require('../../models/Order');
-const { categoryOptions, orderStatusOptions } = require('../../config/constants');
+const productService = require('../../services/productService');
+const userService = require('../../services/userService');
+const orderService = require('../../services/orderService');
+const { categoryOptions, orderStatusOptions } = require('../../shared/constants');
 const { setFlash } = require('../../middlewares/flash');
 
 function showLogin(req, res) {
@@ -16,18 +16,13 @@ async function login(req, res) {
     const password = req.body.password || '';
 
     try {
-        const user = await User.findOne({ email });
-        if (!user || user.role !== 'admin') {
+        const result = await userService.authenticateAdmin({ email, password });
+        if (!result.ok) {
             req.flash('error', 'Invalid credentials.');
             return res.redirect('/admin/login');
         }
 
-        const isValid = await user.comparePassword(password);
-        if (!isValid) {
-            req.flash('error', 'Invalid credentials.');
-            return res.redirect('/admin/login');
-        }
-
+        const user = result.user;
         req.session.user = {
             id: String(user._id),
             role: user.role,
@@ -51,7 +46,7 @@ function logout(req, res) {
 
 async function dashboard(req, res) {
     try {
-        const products = await Product.find({}).sort({ createdAt: -1 }).lean();
+        const products = await productService.listAllProducts();
         return res.render('admin/dashboard', { products, user: req.session.user });
     } catch (err) {
         console.error('Admin dashboard error:', err);
@@ -61,7 +56,7 @@ async function dashboard(req, res) {
 
 async function orders(req, res) {
     try {
-        const ordersList = await Order.find({}).sort({ createdAt: -1 }).lean();
+        const ordersList = await orderService.listAllOrders();
         return res.render('admin/orders', {
             orders: ordersList,
             statusOptions: orderStatusOptions,
@@ -75,13 +70,13 @@ async function orders(req, res) {
 
 async function updateOrderStatus(req, res) {
     const status = (req.body.status || '').trim();
-    if (!orderStatusOptions.includes(status)) {
+    if (!orderService.isValidStatus(status)) {
         req.flash('error', 'Invalid order status.');
         return res.redirect('/admin/orders');
     }
 
     try {
-        await Order.findByIdAndUpdate(req.params.id, { status });
+        await orderService.updateOrderStatus(req.params.id, status);
         req.flash('success', 'Order status updated.');
         return res.redirect('/admin/orders');
     } catch (err) {
@@ -101,43 +96,18 @@ function newProductForm(req, res) {
 }
 
 async function createProduct(req, res) {
-    const body = req.body;
-    const imageUrlInput = (body.imageUrl || '').trim();
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : imageUrlInput;
-
-    const name = (body.name || '').trim();
-    const brand = (body.brand || '').trim();
-    const category = (body.category || '').trim().toLowerCase();
-    const ratingCount = (body.ratingCount || '').trim() || '0';
-
-    const price = Number(body.price);
-    const mrp = Number(body.mrp);
-    const discount = Number(body.discount);
-    const rating = Number(body.rating);
-    const stock = Number(body.stock);
-    if (!name || !category || Number.isNaN(price) || Number.isNaN(rating) || Number.isNaN(stock) || !imageUrl) {
-        return res.render('admin/new', {
-            error: 'Please fill all required fields.',
-            product: { ...body, imageUrl: imageUrlInput },
-            categoryOptions,
-            user: req.session.user
-        });
-    }
-
     try {
-        await Product.create({
-            name,
-            brand,
-            price,
-            mrp: Number.isNaN(mrp) ? 0 : mrp,
-            discount: Number.isNaN(discount) ? 0 : discount,
-            category,
-            rating,
-            ratingCount,
-            stock,
-            imageUrl
-        });
-        setFlash(req, 'success', `Product "${name}" created.`);
+        const result = await productService.createProductFromForm(req.body, req.file);
+        if (!result.ok) {
+            return res.render('admin/new', {
+                error: 'Please fill all required fields.',
+                product: result.formData,
+                categoryOptions,
+                user: req.session.user
+            });
+        }
+
+        setFlash(req, 'success', `Product "${result.product.name}" created.`);
         return res.redirect('/admin');
     } catch (err) {
         console.error('Admin create error:', err);
@@ -147,13 +117,13 @@ async function createProduct(req, res) {
 
 async function editProductForm(req, res) {
     try {
-        const product = await Product.findById(req.params.id).lean();
-        if (!product) {
+        const result = await productService.getProductById(req.params.id);
+        if (!result.ok) {
             return res.status(404).send('Product not found.');
         }
         return res.render('admin/edit', {
             error: '',
-            product,
+            product: result.product,
             categoryOptions,
             user: req.session.user
         });
@@ -164,47 +134,18 @@ async function editProductForm(req, res) {
 }
 
 async function updateProduct(req, res) {
-    const body = req.body;
-    const imageUrlInput = (body.imageUrl || '').trim();
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : imageUrlInput;
-
-    const name = (body.name || '').trim();
-    const brand = (body.brand || '').trim();
-    const category = (body.category || '').trim().toLowerCase();
-    const ratingCount = (body.ratingCount || '').trim() || '0';
-
-    const price = Number(body.price);
-    const mrp = Number(body.mrp);
-    const discount = Number(body.discount);
-    const rating = Number(body.rating);
-    const stock = Number(body.stock);
-    if (!name || !category || Number.isNaN(price) || Number.isNaN(rating) || Number.isNaN(stock)) {
-        return res.render('admin/edit', {
-            error: 'Please fill all required fields.',
-            product: { ...body, _id: req.params.id, imageUrl: imageUrlInput },
-            categoryOptions,
-            user: req.session.user
-        });
-    }
-
-    const update = {
-        name,
-        brand,
-        price,
-        mrp: Number.isNaN(mrp) ? 0 : mrp,
-        discount: Number.isNaN(discount) ? 0 : discount,
-        category,
-        rating,
-        ratingCount,
-        stock
-    };
-    if (imageUrl) {
-        update.imageUrl = imageUrl;
-    }
-
     try {
-        await Product.findByIdAndUpdate(req.params.id, update);
-        setFlash(req, 'success', `Product "${name}" updated.`);
+        const result = await productService.updateProductFromForm(req.params.id, req.body, req.file);
+        if (!result.ok) {
+            return res.render('admin/edit', {
+                error: 'Please fill all required fields.',
+                product: result.formData,
+                categoryOptions,
+                user: req.session.user
+            });
+        }
+
+        setFlash(req, 'success', `Product "${result.name}" updated.`);
         return res.redirect('/admin');
     } catch (err) {
         console.error('Admin update error:', err);
@@ -214,7 +155,7 @@ async function updateProduct(req, res) {
 
 async function deleteProduct(req, res) {
     try {
-        const deleted = await Product.findByIdAndDelete(req.params.id);
+        const deleted = await productService.deleteProduct(req.params.id);
         const deletedName = deleted && deleted.name ? deleted.name : 'Product';
         setFlash(req, 'success', `Product "${deletedName}" deleted.`);
         return res.redirect('/admin');
